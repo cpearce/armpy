@@ -46,5 +46,8 @@ class InvertedIndex:
         # print("index.Support({})".format(",".join(map(str, itemset))))
         if not isinstance(itemset, set) and not isinstance(itemset, frozenset):
             raise TypeError("InvertedIndex.support() expects a set of items")
+        return self.count(itemset) / self.num_transactions
+
+    def count(self, itemset):
         return len(set.intersection(*[self.index[i]
-                                      for i in itemset])) / self.num_transactions
+                                      for i in itemset]))

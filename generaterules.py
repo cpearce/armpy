@@ -20,6 +20,8 @@ def powerset(iterable):
 
 # Return a generator of (antecedent, consequent, confidence, lift, support),
 # for all rules that can be generated from set of item sets.
+
+
 def generate_rules(set_of_itemsets, min_confidence, min_lift, inverted_index):
     for itemset in set_of_itemsets:
         if len(itemset) < 2:
@@ -36,3 +38,16 @@ def generate_rules(set_of_itemsets, min_confidence, min_lift, inverted_index):
             if lift < min_lift:
                 continue
             yield (antecedent, consequent, confidence, lift, support)
+
+
+def is_closed_itemset(itemset, inverted_index):
+    # If any subset of the itemset has support equal to the support
+    # of the itemset, the itemset is not closed. Note we compare counts
+    # rather than support in order to avoid floating point comparison
+    # problems.
+    count = inverted_index.count(itemset)
+    for sub_set in (frozenset(x) for x in powerset(itemset)):
+        if inverted_index.count(sub_set) == count:
+            print("{} is not closed because {} also has support {}".format(itemset, sub_set, count))
+            return False
+    return True
