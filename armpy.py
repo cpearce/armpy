@@ -7,7 +7,6 @@ from generaterules import generate_rules
 from index import InvertedIndex
 from datasetreader import DatasetReader
 
-
 def set_to_string(s):
     ss = ""
     for x in sorted(s):

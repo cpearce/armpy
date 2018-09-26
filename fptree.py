@@ -6,6 +6,7 @@ from item import Item
 from item import ItemSet
 import time
 import sys
+from graph import TreeGrapher
 
 if sys.version_info[0] < 3:
     raise Exception("Python 3 or a more recent version is required.")
@@ -175,6 +176,7 @@ def fp_growth(
         path_count,
         itemsets,
         itemset_counts,
+        grapher,
         maximal_only=False):
     # For each item in the tree that is frequent, in increasing order
     # of frequency...
@@ -217,14 +219,18 @@ def mine_fp_tree(transactions, min_support, maximal_itemsets_only=False):
     min_count = min_support * num_transactions
     itemsets = set()
     itemset_counts = dict()
-    fp_growth(
-        tree,
-        min_count,
-        [],
-        num_transactions,
-        itemsets,
-        itemset_counts,
-        maximal_itemsets_only)
+    grapher = TreeGrapher("fpgrowth.dot")
+    grapher.add("root", "root", tree)
+    grapher.write()
+    # fp_growth(
+    #     tree,
+    #     min_count,
+    #     [],
+    #     num_transactions,
+    #     itemsets,
+    #     itemset_counts,
+    #     grapher,
+    #     maximal_itemsets_only)
     return (itemsets, itemset_counts, num_transactions)
 
 
