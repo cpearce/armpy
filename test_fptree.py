@@ -47,46 +47,6 @@ def test_basic_sanity():
         test_transactions, 2 / len(test_transactions))
     assert(set(itemsets) == expected_itemsets)
 
-
-def test_tree_sorting():
-
-    (expected_tree, _) = construct_initial_tree(test_transactions, 0)
-    assert(expected_tree.is_sorted())
-
-    tree = FPTree()
-    for transaction in test_transactions:
-        # Insert reversed, since lexicographical order is already decreasing
-        # frequency order in this example.
-        tree.insert(reversed(transaction))
-    assert(str(expected_tree) != str(tree))
-    tree.sort()
-    assert(tree.is_sorted())
-    assert(str(expected_tree) == str(tree))
-
-    datasets = [
-        "datasets/UCI-zoo.csv",
-        "datasets/mushroom.csv",
-        # "datasets/BMS-POS.csv",
-        # "datasets/kosarak.csv",
-    ]
-
-    for csvFilePath in datasets:
-        print("Loading FPTree for {}".format(csvFilePath))
-        start = time.time()
-        tree = FPTree()
-        for transaction in DatasetReader(csvFilePath):
-            # Insert sorted lexicographically
-            tree.insert(sorted(transaction))
-        duration = time.time() - start
-        print("Loaded in {:.2f} seconds".format(duration))
-        print("Sorting...")
-        start = time.time()
-        tree.sort()
-        duration = time.time() - start
-        print("Sorting took {:.2f} seconds".format(duration))
-        assert(tree.is_sorted())
-
-
 def test_stress():
     datasets = [
         ("datasets/UCI-zoo.csv", 0.3),
@@ -136,16 +96,3 @@ def test_stress():
                     apriori_duration))
         print("")
 
-
-def test_tree_iter():
-    tree = FPTree()
-    (item_count, _) = count_item_frequency_in(test_transactions)
-    expected = Counter()
-    for transaction in test_transactions:
-        sort_transaction(transaction, item_count)
-        tree.insert(transaction)
-        expected[frozenset(transaction)] += 1
-    observed = Counter()
-    for (transaction, count) in tree:
-        observed[frozenset(transaction)] += count
-    assert(expected == observed)
