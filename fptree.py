@@ -1,5 +1,6 @@
 from collections import Counter
 from collections import deque
+from collections import defaultdict
 from apriori import apriori
 from index import InvertedIndex
 from item import Item
@@ -43,26 +44,23 @@ class FPNode:
 class FPTree:
     def __init__(self):
         self.root = FPNode()
-        self.header = {}
+        self.header = defaultdict(list)
         self.item_count = Counter()
-        self.num_transactions = 0
 
     def insert(self, transaction, count=1):
         assert(count > 0)
-        node = self.root
-        self.num_transactions += count
+        parent = self.root
         for item in transaction:
             self.item_count[item] += count
-            if item not in node.children:
-                child = FPNode(item, count, node)
-                node.children[item] = child
-                node = child
-                if item not in self.header:
-                    self.header[item] = set()
-                self.header[item].add(node)
+            if item not in parent.children:
+                node = FPNode(item, count, parent)
+                parent.children[item] = node
+                parent = node
+                self.header[item].append(parent)
             else:
-                node = node.children[item]
-                node.count += count
+                parent = parent.children[item]
+                parent.count += count
+
 
     def __str__(self):
         return "(" + str(self.root) + ")"
