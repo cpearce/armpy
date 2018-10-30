@@ -16,22 +16,15 @@ class FPNode:
         self.item = item
         # Number of paths which include this node.
         self.count = count
-        # Number of paths which end on this node. There may be other paths
-        # for which the path down to this node is a prefix.
-        self.end_count = 0
         self.children = {}
         self.parent = parent
 
     def is_root(self):
         return self.parent is None
 
-    def is_leaf(self):
-        return self.end_count > 0
-
     def __str__(self, level=0):
         ret = ("[root]" if self.is_root()
                else " " * level + str(self.item) + ":" + str(self.count))
-        ret += "*" if self.is_leaf() else ""
         ret += "\n"
         # Print out the child nodes in decreasing order of count, tie break on
         # lexicographical order. As with sort_transaction() below, we achieve
@@ -70,7 +63,6 @@ class FPTree:
             else:
                 node = node.children[item]
                 node.count += count
-        node.end_count += count
 
     def __str__(self):
         return "(" + str(self.root) + ")"
