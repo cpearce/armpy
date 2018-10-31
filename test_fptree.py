@@ -45,7 +45,12 @@ def test_basic_sanity():
 
     (itemsets, _, _) = mine_fp_tree(
         test_transactions, 2 / len(test_transactions))
-    assert(set(itemsets) == expected_itemsets)
+    print("expected= {}".format(expected_itemsets))
+    print("observed= {}".format(itemsets))
+    assert(len(itemsets) == len(expected_itemsets))
+    for itemset in [frozenset(list(x)) for x in itemsets]:
+        assert(itemset in expected_itemsets)
+
 
 def test_stress():
     datasets = [
@@ -78,11 +83,9 @@ def test_stress():
                 len(fptree_itemsets),
                 fptree_duration))
 
-        if set(fptree_itemsets) == set(apriori_itemsets):
-            print("SUCCESS({}): Apriori and fptree results match".format(csvFilePath))
-        else:
-            print("FAIL({}): Apriori and fptree results differ!".format(csvFilePath))
-        assert(set(fptree_itemsets) == set(apriori_itemsets))
+        assert(len(fptree_itemsets) == len(apriori_itemsets))
+        for itemset in [list(x) for x in fptree_itemsets]:
+            assert(itemset in apriori_itemsets)
 
         if apriori_duration > fptree_duration:
             print(

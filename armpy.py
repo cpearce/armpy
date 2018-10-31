@@ -53,11 +53,6 @@ def main():
         dest="min_lift",
         type=float_gteq_1,
         required=True)
-    parser.add_argument(
-        "--generate-maximal-itemsets",
-        dest="maximal_itemsets",
-        action='store_true'
-    )
     args = parser.parse_args()
 
     program_start = time.time()
@@ -68,12 +63,11 @@ def main():
     print("Minimum support: {}".format(args.min_confidence))
     print("Minimum confidence: {}".format(args.min_support))
     print("Minimum lift: {}".format(args.min_lift))
-    print("Generating maximal itemsets: {}".format(args.maximal_itemsets))
 
     print("Generating frequent itemsets using FPGrowth...", flush=True)
     reader = DatasetReader(args.input)
     (itemsets, itemset_counts, num_transactions) = mine_fp_tree(
-        reader, args.min_support, args.maximal_itemsets)
+        reader, args.min_support)
     duration = time.time() - start
     print(
         "FPGrowth mined {} items in {:.2f} seconds".format(

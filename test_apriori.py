@@ -28,9 +28,11 @@ def test_apriori():
     index = InvertedIndex()
     index.load(data)
     itemsets = apriori(index, 2 / 6)
-    assert(set(expectedItemSets.keys()) == set(itemsets))
+    assert(len(itemsets) == len(expectedItemSets))
     for itemset in itemsets:
-        assert(expectedItemSets[itemset] == index.support(itemset))
+        assert(frozenset(itemset) in expectedItemSets)
+    for itemset in itemsets:
+        assert(expectedItemSets[frozenset(itemset)] == index.support(itemset))
 
     print("Itemsets={}".format([i for i in itemsets if len(i) > 1]))
 
@@ -47,7 +49,7 @@ def test_apriori():
         (frozenset({Item("z")}), frozenset({Item("y")}), 0.5, 1.5, 1 / 3),
     }
 
-    itemset_counts = dict(map(lambda i: (i, index.count(i)), itemsets))
+    itemset_counts = dict(map(lambda i: (tuple(i), index.count(i)), itemsets))
     rules = generate_rules(
         itemsets,
         itemset_counts,

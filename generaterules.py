@@ -35,9 +35,11 @@ def generate_rules(
     result = set()
 
     def calculate_support(i):
-        return itemset_counts[i] / num_transactions
+        key = list(i)
+        key.sort()
+        return itemset_counts[tuple(key)] / num_transactions
 
-    for itemset in itemsets:
+    for itemset in [frozenset(y) for y in itemsets]:
         if len(itemset) < 2:
             continue
         for item in itemset:

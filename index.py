@@ -43,7 +43,9 @@ class InvertedIndex:
         for item in itemset:
             if not isinstance(item, Item):
                 raise TypeError("Itemset must contain only Items")
-        if not isinstance(itemset, set) and not isinstance(itemset, frozenset):
+        if (not isinstance(itemset, set) and
+            not isinstance(itemset, frozenset) and
+            not isinstance(itemset, list)):
             raise TypeError("InvertedIndex.support() expects a set of items")
         return len(set.intersection(*[self.index[i]
                                       for i in itemset]))

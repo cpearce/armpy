@@ -32,4 +32,4 @@ def apriori(index, minsup):
         itemset_size += 1
         results.extend(list(generation))
         candidates = generation
-    return results
+    return list(map(lambda x: list(sorted(list(x))), results))

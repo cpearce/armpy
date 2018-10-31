@@ -50,6 +50,7 @@ class FPTree:
     def insert(self, transaction, count=1):
         assert(count > 0)
         parent = self.root
+        parent.count += count
         for item in transaction:
             self.item_count[item] += count
             if item not in parent.children:
@@ -102,37 +103,33 @@ def fp_growth(
             # Item is no longer frequent on this path, skip.
             continue
 
-        # Need to store the support of this itemset, so we
-        # can look it up during rule generation later on.
-        itemset = frozenset(path + [item])
-        new_path_count = min(path_count, tree.item_count[item])
-        assert(itemset not in itemset_counts)
-        itemset_counts[itemset] = new_path_count
-
         # Build conditional tree of all patterns in this tree which start
         # with this item.
         conditional_tree = construct_conditional_tree(tree, item)
-        num_itemsets = len(itemsets)
+        itemset = path + [item]
+        itemset.sort()
+        new_path_count = conditional_tree.root.count
         fp_growth(
             conditional_tree,
             min_count,
-            path + [item],
+            itemset,
             new_path_count,
             itemsets,
             itemset_counts,
             maximal_only)
 
-        # Add the path to here to the output set, if appropriate.
-        # If recursing further didn't yield any more itemsets, then
-        # this is a maximal itemset.
-        if not maximal_only or len(itemsets) == num_itemsets:
-            itemsets.add(itemset)
+        # Need to store the support of this itemset, so we
+        # can look it up during rule generation later on.
+        itemset_key = tuple(itemset)
+        assert(itemset_key not in itemset_counts)
+        itemset_counts[itemset_key] = new_path_count
 
+        itemsets.append(itemset)
 
-def mine_fp_tree(transactions, min_support, maximal_itemsets_only=False):
+def mine_fp_tree(transactions, min_support):
     (tree, num_transactions) = construct_initial_tree(transactions, min_support)
     min_count = min_support * num_transactions
-    itemsets = set()
+    itemsets = []
     itemset_counts = dict()
     fp_growth(
         tree,
@@ -140,8 +137,7 @@ def mine_fp_tree(transactions, min_support, maximal_itemsets_only=False):
         [],
         num_transactions,
         itemsets,
-        itemset_counts,
-        maximal_itemsets_only)
+        itemset_counts)
     return (itemsets, itemset_counts, num_transactions)
 
 
