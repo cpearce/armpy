@@ -12,4 +12,4 @@ class DatasetReader:
         def itemize(tokens):
             return map(item_id, tokens)
 
-        return map(itemize, map(tokenize, open(self.csv_file_path)))
+        return map(set, map(itemize, map(tokenize, open(self.csv_file_path))))
