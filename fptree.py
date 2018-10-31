@@ -131,6 +131,7 @@ def mine_fp_tree(transactions, min_support):
     min_count = min_support * num_transactions
     itemsets = []
     itemset_counts = dict()
+    start = time.time()
     fp_growth(
         tree,
         min_count,
@@ -138,6 +139,8 @@ def mine_fp_tree(transactions, min_support):
         num_transactions,
         itemsets,
         itemset_counts)
+    duration = time.time() - start
+    print("FPGrowth generated {} itemset in {:.2f}".format(len(itemsets), duration))
     return (itemsets, itemset_counts, num_transactions)
 
 
@@ -169,8 +172,14 @@ def count_item_frequency_in(transactions):
 
 
 def construct_initial_tree(transactions, min_support):
+    start = time.time()
+    print("Counting item frequencies... ")
     (frequency, num_transactions) = count_item_frequency_in(transactions)
+    duration = time.time() - start
+    print("Counted item frequencies in {:.2f} seconds".format(duration))
+    start = time.time()
     min_count = num_transactions * min_support
+    print("Building initial FPTree")
     tree = FPTree()
     for transaction in transactions:
         # Remove infrequent items from transaction. They cannot contribute to
@@ -179,4 +188,6 @@ def construct_initial_tree(transactions, min_support):
             lambda item: frequency[item] >= min_count,
             transaction)
         tree.insert(sort_transaction(transaction, frequency))
+    duration = time.time() - start
+    print("Built initial tree in {:.2f} seconds".format(duration))
     return (tree, num_transactions)
