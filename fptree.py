@@ -147,7 +147,6 @@ def sort_transaction(transaction, frequency):
     # twice; once lexicographically, and then a second time in order of
     # frequency. This works because Python's sort is stable; items that
     # compare equal aren't permuted.
-    transaction = sorted(transaction)
     if frequency is None:
         return transaction
     if not isinstance(frequency, Counter):
