@@ -80,10 +80,6 @@ def construct_conditional_tree(tree, item):
     return conditional_tree
 
 
-def first_child(node):
-    return list(node.children.values())[0]
-
-
 def fp_growth(
         tree,
         min_count,
