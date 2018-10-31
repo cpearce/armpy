@@ -5,12 +5,13 @@ from argparse import ArgumentTypeError
 from fptree import mine_fp_tree
 from generaterules import generate_rules
 from index import InvertedIndex
+from item import item_str
 from datasetreader import DatasetReader
 
 
 def set_to_string(s):
     ss = ""
-    for x in sorted(s):
+    for x in sorted(map(item_str, s)):
         if ss != "":
             ss += " "
         ss += str(x)

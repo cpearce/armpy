@@ -1,5 +1,5 @@
 from index import InvertedIndex
-from item import Item
+from item import item_id
 
 
 def test_InvertedIndex():
@@ -11,26 +11,26 @@ def test_InvertedIndex():
             "z,x,y,i\n")
     index = InvertedIndex()
     index.load(data)
-    assert(index.support({Item("a")}) == 1 / 6)
-    assert(index.support({Item("b")}) == 1 / 6)
-    assert(index.support({Item("c")}) == 1 / 6)
-    assert(index.support({Item("d")}) == 1 / 6)
-    assert(index.support({Item("e")}) == 1 / 6)
-    assert(index.support({Item("f")}) == 1 / 6)
-    assert(index.support({Item("h")}) == 1 / 6)
-    assert(index.support({Item("i")}) == 2 / 6)
-    assert(index.support({Item("j")}) == 1 / 6)
-    assert(index.support({Item("k")}) == 1 / 6)
-    assert(index.support({Item("l")}) == 1 / 6)
-    assert(index.support({Item("z")}) == 4 / 6)
-    assert(index.support({Item("x")}) == 4 / 6)
-    assert(index.support({Item("y")}) == 2 / 6)
+    assert(index.support({item_id("a")}) == 1 / 6)
+    assert(index.support({item_id("b")}) == 1 / 6)
+    assert(index.support({item_id("c")}) == 1 / 6)
+    assert(index.support({item_id("d")}) == 1 / 6)
+    assert(index.support({item_id("e")}) == 1 / 6)
+    assert(index.support({item_id("f")}) == 1 / 6)
+    assert(index.support({item_id("h")}) == 1 / 6)
+    assert(index.support({item_id("i")}) == 2 / 6)
+    assert(index.support({item_id("j")}) == 1 / 6)
+    assert(index.support({item_id("k")}) == 1 / 6)
+    assert(index.support({item_id("l")}) == 1 / 6)
+    assert(index.support({item_id("z")}) == 4 / 6)
+    assert(index.support({item_id("x")}) == 4 / 6)
+    assert(index.support({item_id("y")}) == 2 / 6)
 
-    sup_zx = index.support({Item("z"), Item("x")})
+    sup_zx = index.support({item_id("z"), item_id("x")})
     assert(sup_zx == 4 / 6)
 
-    sup_zxy = index.support({Item("z"), Item("x"), Item("y")})
+    sup_zxy = index.support({item_id("z"), item_id("x"), item_id("y")})
     assert(sup_zxy == 2 / 6)
 
-    sup_zxyi = index.support({Item("z"), Item("x"), Item("y"), Item("i")})
+    sup_zxyi = index.support({item_id("z"), item_id("x"), item_id("y"), item_id("i")})
     assert(sup_zxyi == 1 / 6)

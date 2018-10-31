@@ -1,11 +1,15 @@
-import csv
-from item import Item
-
+from item import item_id
 
 class DatasetReader:
     def __init__(self, csv_file_path):
         self.csv_file_path = csv_file_path
 
     def __iter__(self):
-        return map(lambda txn: list(set(map(Item, txn))),
-                   csv.reader(open(self.csv_file_path, newline='')))
+
+        def tokenize(line):
+            return map(lambda x: x.strip(), line.split(","))
+
+        def itemize(tokens):
+            return map(item_id, tokens)
+
+        return map(itemize, map(tokenize, open(self.csv_file_path)))

@@ -1,6 +1,6 @@
 from index import InvertedIndex
 from apriori import apriori
-from item import Item, ItemSet
+from item import item_id, ItemSet
 from generaterules import generate_rules
 import sys
 
@@ -38,15 +38,15 @@ def test_apriori():
 
     # (antecedent, consequent, confidence, lift, support)
     expectedRules = {
-        (frozenset({Item("x"), Item("y")}), frozenset({Item("z")}), 1, 1.5, 1 / 3),
-        (frozenset({Item("x")}), frozenset({Item("y")}), 0.5, 1.5, 1 / 3),
-        (frozenset({Item("x")}), frozenset({Item("z")}), 1, 1.5, 2 / 3),
-        (frozenset({Item("y")}), frozenset({Item("x")}), 1, 1.5, 1 / 3),
-        (frozenset({Item("y")}), frozenset({Item("z")}), 1, 1.5, 1 / 3),
-        (frozenset({Item("z"), Item("x")}), frozenset({Item("y")}), 0.5, 1.5, 1 / 3),
-        (frozenset({Item("z"), Item("y")}), frozenset({Item("x")}), 1, 1.5, 1 / 3),
-        (frozenset({Item("z")}), frozenset({Item("x")}), 1, 1.5, 2 / 3),
-        (frozenset({Item("z")}), frozenset({Item("y")}), 0.5, 1.5, 1 / 3),
+        (frozenset({item_id("x"), item_id("y")}), frozenset({item_id("z")}), 1, 1.5, 1 / 3),
+        (frozenset({item_id("x")}), frozenset({item_id("y")}), 0.5, 1.5, 1 / 3),
+        (frozenset({item_id("x")}), frozenset({item_id("z")}), 1, 1.5, 2 / 3),
+        (frozenset({item_id("y")}), frozenset({item_id("x")}), 1, 1.5, 1 / 3),
+        (frozenset({item_id("y")}), frozenset({item_id("z")}), 1, 1.5, 1 / 3),
+        (frozenset({item_id("z"), item_id("x")}), frozenset({item_id("y")}), 0.5, 1.5, 1 / 3),
+        (frozenset({item_id("z"), item_id("y")}), frozenset({item_id("x")}), 1, 1.5, 1 / 3),
+        (frozenset({item_id("z")}), frozenset({item_id("x")}), 1, 1.5, 2 / 3),
+        (frozenset({item_id("z")}), frozenset({item_id("y")}), 0.5, 1.5, 1 / 3),
     }
 
     itemset_counts = dict(map(lambda i: (tuple(i), index.count(i)), itemsets))

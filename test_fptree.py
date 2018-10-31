@@ -6,14 +6,14 @@ from fptree import count_item_frequency_in
 from fptree import sort_transaction
 from apriori import apriori
 from index import InvertedIndex
-from item import Item
+from item import item_id
 from item import ItemSet
 from datasetreader import DatasetReader
 import time
 import sys
 
 
-test_transactions = list(map(lambda t: list(map(Item, t)), [
+test_transactions = list(map(lambda t: list(map(item_id, t)), [
     ["a", "b"],
     ["b", "c", "d"],
     ["a", "c", "d", "e"],
