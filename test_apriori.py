@@ -1,6 +1,6 @@
 from index import InvertedIndex
 from apriori import apriori
-from item import item_id, ItemSet
+from item import item_id, item_str, ItemSet
 from generaterules import generate_rules
 import sys
 
@@ -36,18 +36,26 @@ def test_apriori():
 
     print("Itemsets={}".format([i for i in itemsets if len(i) > 1]))
 
+    def itemize(a):
+        return list(map(item_id, a))
+
     # (antecedent, consequent, confidence, lift, support)
-    expectedRules = {
-        (frozenset({item_id("x"), item_id("y")}), frozenset({item_id("z")}), 1, 1.5, 1 / 3),
-        (frozenset({item_id("x")}), frozenset({item_id("y")}), 0.5, 1.5, 1 / 3),
-        (frozenset({item_id("x")}), frozenset({item_id("z")}), 1, 1.5, 2 / 3),
-        (frozenset({item_id("y")}), frozenset({item_id("x")}), 1, 1.5, 1 / 3),
-        (frozenset({item_id("y")}), frozenset({item_id("z")}), 1, 1.5, 1 / 3),
-        (frozenset({item_id("z"), item_id("x")}), frozenset({item_id("y")}), 0.5, 1.5, 1 / 3),
-        (frozenset({item_id("z"), item_id("y")}), frozenset({item_id("x")}), 1, 1.5, 1 / 3),
-        (frozenset({item_id("z")}), frozenset({item_id("x")}), 1, 1.5, 2 / 3),
-        (frozenset({item_id("z")}), frozenset({item_id("y")}), 0.5, 1.5, 1 / 3),
-    }
+    rx = [
+        (['y'], ['x'], 1.0, 1.5, 0.3333333333333333),
+        (['x'], ['y'], 0.5, 1.5, 0.3333333333333333),
+        (['y'], ['z'], 1.0, 1.5, 0.3333333333333333),
+        (['z'], ['y'], 0.5, 1.5, 0.3333333333333333),
+        (['x'], ['z'], 1.0, 1.5, 0.6666666666666666),
+        (['z'], ['x'], 1.0, 1.5, 0.6666666666666666),
+        (['x', 'y'], ['z'], 1.0, 1.5, 0.3333333333333333),
+        (['z', 'y'], ['x'], 1.0, 1.5, 0.3333333333333333),
+        (['z', 'x'], ['y'], 0.5, 1.5, 0.3333333333333333),
+        (['y'], ['z', 'x'], 1.0, 1.5, 0.3333333333333333),
+        (['x'], ['z', 'y'], 0.5, 1.5, 0.3333333333333333),
+        (['z'], ['x', 'y'], 0.5, 1.5, 0.3333333333333333)
+    ]
+
+    expectedRules = list(map(lambda a: (itemize(a[0]), itemize(a[1]), a[2], a[3], a[4]), rx))
 
     itemset_counts = dict(map(lambda i: (tuple(i), index.count(i)), itemsets))
     rules = generate_rules(
@@ -56,6 +64,13 @@ def test_apriori():
         index.num_transactions,
         0,
         0)
+
+    def deitemize(a):
+        return list(map(item_str, a))
+
+    p = list(map(lambda a: (deitemize(a[0]), deitemize(a[1]), a[2], a[3], a[4]), rules))
+    print("rules")
+    print(p)
 
     for (antecedent,
          consequent,
@@ -66,4 +81,5 @@ def test_apriori():
               format(antecedent, consequent, confidence, lift, support))
 
     assert(len(rules) == len(expectedRules))
-    assert(rules == expectedRules)
+    for i in range(len(rules)):
+        assert(expectedRules[i] in rules)
