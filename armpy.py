@@ -77,13 +77,12 @@ def main():
         flush=True)
 
     start = time.time()
-    rules = list(
-        generate_rules(
+    rules = generate_rules(
             itemsets,
             itemset_counts,
             num_transactions,
             args.min_confidence,
-            args.min_lift))
+            args.min_lift)
     duration = time.time() - start
     print(
         "Generated {} rules in {:.2f} seconds".format(

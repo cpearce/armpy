@@ -1,4 +1,5 @@
 from itertools import product
+from typing import List
 import sys
 
 if sys.version_info[0] < 3:
@@ -12,7 +13,7 @@ def contains_all_subsets(candidate, candidates):
     return True
 
 
-def apriori(index, minsup):
+def apriori(index, minsup) -> List[List[int]]:
     print("Apriori with minsup={}".format(minsup))
     candidates = set(
         [frozenset({i}) for i in index.items() if index.support({i}) >= minsup])

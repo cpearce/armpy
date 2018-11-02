@@ -3,6 +3,7 @@ from collections import deque
 from collections import defaultdict
 from apriori import apriori
 from index import InvertedIndex
+from typing import Counter, DefaultDict, Dict, Iterator, List, Tuple
 import time
 import sys
 
@@ -11,6 +12,10 @@ if sys.version_info[0] < 3:
 
 
 class FPNode:
+    count: int
+    children: Dict[int, 'FPNode']
+    parent: 'FPNode'
+
     def __init__(self, item=None, count=0, parent=None):
         self.item = item
         # Number of paths which include this node.
@@ -18,10 +23,10 @@ class FPNode:
         self.children = {}
         self.parent = parent
 
-    def is_root(self):
+    def is_root(self) -> bool:
         return self.parent is None
 
-    def __str__(self, level=0):
+    def __str__(self, level=0) -> str:
         ret = ("[root]" if self.is_root()
                else " " * level + str(self.item) + ":" + str(self.count))
         ret += "\n"
@@ -35,17 +40,21 @@ class FPNode:
             ret += node.__str__(level + 1)
         return ret
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
 
 class FPTree:
+    root: FPNode
+    header: DefaultDict
+    item_count: Counter
+
     def __init__(self):
         self.root = FPNode()
         self.header = defaultdict(list)
         self.item_count = Counter()
 
-    def insert(self, transaction, count=1):
+    def insert(self, transaction: Iterator[int], count: int = 1) -> None:
         assert(count > 0)
         parent = self.root
         parent.count += count
@@ -64,15 +73,15 @@ class FPTree:
     def __str__(self):
         return "(" + str(self.root) + ")"
 
-def path_to_root(node):
-    path = []
+def path_to_root(node: FPNode) -> List[int]:
+    path: List[int]= []
     while not node.is_root():
         path += [node.item]
         node = node.parent
     return path
 
 
-def construct_conditional_tree(tree, item):
+def construct_conditional_tree(tree: FPTree, item: int) -> FPTree:
     conditional_tree = FPTree()
     for node in tree.header[item]:
         path = path_to_root(node.parent)
@@ -81,13 +90,12 @@ def construct_conditional_tree(tree, item):
 
 
 def fp_growth(
-        tree,
-        min_count,
-        path,
-        path_count,
-        itemsets,
-        itemset_counts,
-        maximal_only=False):
+        tree: FPTree,
+        min_count: int,
+        path: List[int],
+        path_count: int,
+        itemsets: List[List[int]],
+        itemset_counts: Dict[Tuple[int, ...], int]) -> None:
     # For each item in the tree that is frequent, in increasing order
     # of frequency...
     for item in sorted(
@@ -109,8 +117,7 @@ def fp_growth(
             itemset,
             new_path_count,
             itemsets,
-            itemset_counts,
-            maximal_only)
+            itemset_counts)
 
         # Need to store the support of this itemset, so we
         # can look it up during rule generation later on.
@@ -152,7 +159,6 @@ def sort_transaction(transaction, frequency):
     if not isinstance(frequency, Counter):
         raise TypeError("frequency must be Counter")
     return sorted(transaction, key=lambda item: frequency[item], reverse=True)
-
 
 def count_item_frequency_in(transactions):
     frequency = Counter()
